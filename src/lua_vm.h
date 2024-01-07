@@ -5,9 +5,9 @@
 #include "lua/lualib.h"
 #include "lua/lauxlib.h"
 
-struct LuaVM {
+typedef struct LuaVM {
     lua_State* lua_state;
-};
+} LuaVM;
 
 void start_lua_vm(LuaVM* vm) {
     vm->lua_state = luaL_newstate();
@@ -17,5 +17,18 @@ void start_lua_vm(LuaVM* vm) {
 void terminate_lua_vm(LuaVM* vm) {
     lua_close(vm->lua_state);
 }
+
+/*
+static int l_sin(lua_State *L) {
+    // double d = lua_tonumber(L, 1); get argument
+    // lua_pushnumber(L, sin(d));   push result
+
+    printf("poggers %f!\n", d);
+
+    return 0;  number of results
+}
+*/
+
+typedef int (*lua_CFunction) (lua_State *L);
 
 #endif

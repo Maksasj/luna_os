@@ -1,1 +1,5 @@
-print("Hello from shell !")
+-- print("Hello from shell !")
+
+-- kernel.gfx.some()
+
+-- printmore(3.14)
