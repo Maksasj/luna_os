@@ -1,16 +1,53 @@
-#include "lua/lua.h"
-#include "lua/lualib.h"
-#include "lua/lauxlib.h"
+#include "platform.h"
+#include "kernel.h"
+#include "lua_vm.h"
 
-#include <dirent.h>
+void dir_list(void) {
+    DIR *dirp = opendir(".");
+    if (dirp == NULL) {
+        perror("opendir");
+        return;
+    }
 
-#include <errno.h>
-#include <stdio.h>
+    int num_entries = 0;
 
-#include <fatfs.h>
-#include <nds.h>
+    while (1) {
+        struct dirent *cur = readdir(dirp);
+        if (cur == NULL)
+            break;
 
-#include <nds/arm9/dldi.h>
+        if (strlen(cur->d_name) == 0)
+            break;
+
+        num_entries++;
+
+        // Only print up to 10 entries
+        if (num_entries < 10) {
+            int index = telldir(dirp);
+            printf("%d - %s%s\n", index, cur->d_name,
+                (cur->d_type == DT_DIR) ? "/" : " ");
+        } else if (num_entries == 10) {
+            printf("[...]\n");
+        }
+    }
+
+    closedir(dirp);
+
+    printf("\nNum entries: %d\n", num_entries);
+}
+
+void open_bush_package() {
+    char input_buffer[1024] = { '\0' };
+    FILE *f = fopen("packages/bush/package.lua", "r");
+    int input_size = fread(input_buffer, 1, 1024, f);
+
+    LuaVM vm;
+    start_lua_vm(&vm);
+
+    int res = luaL_dostring(L, input_buffer);
+
+    terminate_lua_vm(&vm);
+}
 
 int main(int argc, char *argv[]) {
     consoleDemoInit();
@@ -23,15 +60,16 @@ int main(int argc, char *argv[]) {
     printf("\n");
     printf("Press START to exit to loader\n");
 
-    lua_State* L;
+    bool init_ok = fatInitDefault();
+    if (!init_ok) {
+        perror("fatInitDefault()");
+    } else {
+        char *cwd = getcwd(NULL, 0);
+        printf("Current dir: %s\n\n", cwd);
+        free(cwd);
 
-    L = luaL_newstate();
-
-    luaL_openlibs(L);
-
-    luaL_dostring(L, "for x = 1, 5 do print(x) end");
-
-    lua_close(L);
+        open_bush_package();
+    }
 
     while (1) {
         swiWaitForVBlank();
