@@ -29,6 +29,4 @@ static int l_sin(lua_State *L) {
 }
 */
 
-typedef int (*lua_CFunction) (lua_State *L);
-
 #endif

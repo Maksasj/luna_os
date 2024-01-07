@@ -3,7 +3,7 @@
 ```lua
 kernel = {
     gfx = {
-        
+        wait_for_vblank()
     },
 }
 ```
