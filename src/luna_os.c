@@ -1,6 +1,8 @@
 #include "platform.h"
-#include "kernel.h"
+#include "kernel/kernel.h"
 #include "lua_vm.h"
+
+LunaOS os = {};
 
 void dir_list(void) {
     DIR *dirp = opendir(".");
@@ -36,75 +38,26 @@ void dir_list(void) {
     // printf("\nNum entries: %d\n", num_entries);
 }
 
-u16* vram0;
-u16* vram1;
-
-static int l_some(lua_State *L) {
-    // double d = lua_tonumber(L, 1); get argument
-    // lua_pushnumber(L, sin(d));   push result
-
-        for (int y = 0; y < 192; y++) {
-            for (int x = 0; x < 256; x++) {
-                vram0[x + (y << 8)] = ARGB16(1, 0, 31, 0);
-                vram1[x + (y << 8)] = ARGB16(1, 31, 0, 0);
-            }
-        }
-
-    return 0;
-}
-
-
-
-
-
-
-
-void open_bush_package() {
+void run_package(const char* entryPointPath) {
     char input_buffer[1024] = { '\0' };
-    FILE *f = fopen("packages/bush/main.lua", "r");
+    FILE *f = fopen(entryPointPath, "r");
     int input_size = fread(input_buffer, 1, 1024, f);
 
-    LuaVM vm;
-    start_lua_vm(&vm);
-
-    // lua_pushcfunction(vm.lua_state, l_sin);
-    // lua_setglobal(vm.lua_state, "printmore");
-
-
-
-
-
-
-
-
-
-
-
-    lua_newtable( vm.lua_state );  /* ==> stack: ..., {} */
-    {
-        lua_pushliteral( vm.lua_state, "gfx" ); /* ==> stack: ..., {}, "b" */
-        lua_newtable(vm.lua_state ); /* ==> stack: ..., {}, "b", {} */
-
-        {
-            lua_pushliteral( vm.lua_state, "some" );
-            lua_pushcfunction(vm.lua_state, l_some);
-            lua_settable(vm.lua_state, -3);
-        }
-
-        lua_settable( vm.lua_state, -3 ); /* ==> stack: ..., {} */
-    }
-    lua_setglobal(vm.lua_state, "kernel" ); /* ==> stack: ... */
-
-
-
-
-
-    int res = luaL_dostring(vm.lua_state, input_buffer);
-
-    terminate_lua_vm(&vm);
+    int res = luaL_dostring(os.vm.lua_state, input_buffer);
 }
 
-void run_another_stuf() {
+void setup_gfx() {
+	videoSetMode(MODE_5_2D); 
+    videoSetModeSub(MODE_5_2D);
+
+	int bg0 = bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0, 0);
+	int bg1 = bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0, 0);
+
+	os.vram0 = (u16*) bgGetGfxPtr(bg0);
+	os.vram1 = (u16*) bgGetGfxPtr(bg1);
+}
+
+void setup_fat() {
     bool init_ok = fatInitDefault();
     if (!init_ok) {
         perror("fatInitDefault()");
@@ -112,39 +65,24 @@ void run_another_stuf() {
         char *cwd = getcwd(NULL, 0);
         // printf("Current dir: %s\n\n", cwd);
         free(cwd);
-
-        open_bush_package();
     }
 }
 
 int main(int argc, char *argv[]) {
-	videoSetMode(MODE_5_2D); 
-    videoSetModeSub(MODE_5_2D);
+    // Setup gfx
+    setup_gfx();
 
-	int bg0 = bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0, 0);
-	int bg1 = bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0, 0);
+    // Setup file system
+    setup_fat();
 
-	vram0 = (u16*) bgGetGfxPtr(bg0);
-	vram1 = (u16*) bgGetGfxPtr(bg1);
+    // Setup lua virtual machine and start boot lua package
+    start_lua_vm(&os.vm);
+    setup_kernel_lua_interface(&os.vm);
 
-    run_another_stuf();
+    run_package("packages/bush/main.lua");
 
-	while(1){
-        /*
-        for (int y = 0; y < 192; y++) {
-            for (int x = 0; x < 256; x++) {
-                vram0[x + (y << 8)] = ARGB16(1, 0, 31, 0);
-                vram1[x + (y << 8)] = ARGB16(1, 31, 0, 0);
-            }
-        }
-        */
-
-		swiWaitForVBlank();
-
-		scanKeys();
-		if(keysDown() & KEY_START)
-            break;
-	}
+    // terminate and cleanup
+    terminate_lua_vm(&os.vm);
 
     return 0;
 }

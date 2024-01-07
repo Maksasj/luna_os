@@ -1,5 +1,5 @@
--- print("Hello from shell !")
+kernel.gfx.test_gfx()
 
--- kernel.gfx.some()
-
--- printmore(3.14)
+while true do
+    kernel.gfx.wait_for_vblank()
+end
