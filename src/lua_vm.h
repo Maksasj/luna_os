@@ -11,7 +11,7 @@ typedef struct LuaVM {
 
 void start_lua_vm(LuaVM* vm) {
     vm->lua_state = luaL_newstate();
-    luaL_openlibs(vm->lua_state);
+    // luaL_openlibs(vm->lua_state); for now lets not include this
 }
 
 void terminate_lua_vm(LuaVM* vm) {
