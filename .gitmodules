@@ -1,0 +1,3 @@
+[submodule "3dparty/lua"]
+	path = 3dparty/lua
+	url = https://github.com/Maksasj/lua
