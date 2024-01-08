@@ -2,7 +2,7 @@
 #define LUNA_OS_PLATFORM_H
 
 // For now just dsi specific
-#include <dirent.h>
+#include <sys/dirent.h>
 
 #include <errno.h>
 #include <stdio.h>
