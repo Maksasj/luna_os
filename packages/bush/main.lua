@@ -1,5 +1,3 @@
-kernel.gfx.test_gfx()
+kernel.lua.require("packages/bush/libluna.lua")
 
-while true do
-    kernel.gfx.wait_for_vblank()
-end
+testFunction()

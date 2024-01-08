@@ -9,14 +9,11 @@ typedef struct LuaVM {
     lua_State* lua_state;
 } LuaVM;
 
-void start_lua_vm(LuaVM* vm) {
-    vm->lua_state = luaL_newstate();
-    // luaL_openlibs(vm->lua_state); for now lets not include this
-}
+void start_lua_vm(LuaVM* vm);
 
-void terminate_lua_vm(LuaVM* vm) {
-    lua_close(vm->lua_state);
-}
+void terminate_lua_vm(LuaVM* vm);
+
+void error_lua_vm();
 
 /*
 static int l_sin(lua_State *L) {

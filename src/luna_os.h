@@ -3,7 +3,7 @@
 
 #include <nds.h>
 
-#include "lua_vm.h"
+#include "lua_vm/lua_vm.h"
 
 typedef struct LunaOS {
     // Scren buffers

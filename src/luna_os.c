@@ -1,15 +1,15 @@
 #include "platform.h"
+
 #include "kernel/kernel.h"
-#include "lua_vm.h"
+#include "lua_vm/lua_vm.h"
 
 LunaOS os = {};
 
 void run_package(const char* entryPointPath) {
-    char input_buffer[1024] = { '\0' };
-    FILE *f = fopen(entryPointPath, "r");
-    int input_size = fread(input_buffer, 1, 1024, f);
+    int res = luaL_dofile(os.vm.lua_state, entryPointPath);
 
-    int res = luaL_dostring(os.vm.lua_state, input_buffer);
+    if(res)
+        error_lua_vm();
 }
 
 int main(int argc, char *argv[]) {
