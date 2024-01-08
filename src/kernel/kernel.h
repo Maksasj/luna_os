@@ -12,18 +12,16 @@ static int l_test_gfx(lua_State *L) {
     int x_arg = luaL_checknumber(L, 1);
     int y_arg = luaL_checknumber(L, 2);
 
-
-    os.vram0[x_arg + (y_arg << 8)] = ARGB16(1, rand() % 31, 0, 0);
-    os.vram1[x_arg + (y_arg << 8)] = ARGB16(1, rand() % 31, 0, 0);
+    os.vram0[x_arg + (y_arg << 8)] = ARGB16(1, 31, 31, 31);
+    os.vram1[x_arg + (y_arg << 8)] = ARGB16(1, 31, 31, 31);
+    
     return 0;
 }
 
 static int l_require(lua_State *L) {
     char* str = luaL_checkstring(L, 1);
 
-    int res = luaL_dofile(L, str);
-    if(res)
-        error_lua_vm();
+    run_script(str);
 
     return 0;
 }

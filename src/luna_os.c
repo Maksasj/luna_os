@@ -5,13 +5,6 @@
 
 LunaOS os = {};
 
-void run_package(const char* entryPointPath) {
-    int res = luaL_dofile(os.vm.lua_state, entryPointPath);
-
-    if(res)
-        error_lua_vm();
-}
-
 int main(int argc, char *argv[]) {
     // Setup platform
     setup_platform(&os);
@@ -20,7 +13,7 @@ int main(int argc, char *argv[]) {
     start_lua_vm(&os.vm);
     setup_kernel_lua_interface(&os.vm);
 
-    run_package("packages/bush/main.lua");
+    run_script("packages/bush/main.lua");
 
     // terminate and cleanup
     terminate_lua_vm(&os.vm);
