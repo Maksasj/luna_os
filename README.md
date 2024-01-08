@@ -3,7 +3,8 @@ LunaOS - homebrew nintendo dsi operating system
 
 ## Architecture
 Operating system architecture scheme
-<img src="https://github.com/Maksasj/luna_os/blob/master/docs/architecture.png">
+
+![Achitecture scheme](https://github.com/Maksasj/luna_os/blob/main/docs/architecture.png)
 
 ## License
 LunaOS is free, open source operating system. All code in this repository FOR NOW is licensed under
