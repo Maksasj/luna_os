@@ -1,3 +1,14 @@
+// For now just dsi specific
+#include <sys/dirent.h>
+
+#include <errno.h>
+#include <stdio.h>
+
+#include <fatfs.h>
+#include <nds.h>
+
+#include <nds/arm9/dldi.h>
+
 #include "platform.h"
 
 void setup_gfx(LunaOS* os_instance) {
@@ -25,4 +36,8 @@ void setup_fat() {
 void setup_platform(LunaOS* os_instance) {
     setup_gfx(os_instance);
     setup_fat();
-} 
+}
+
+void fire_error(const char* error_message) {
+
+}

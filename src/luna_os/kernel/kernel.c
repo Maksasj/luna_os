@@ -1,19 +1,15 @@
-#ifndef LUNA_OS_KERNEL_H
-#define LUNA_OS_KERNEL_H
+#include "kernel.h"
 
-#include "../luna_os.h"
-#include "../lua_vm/lua_vm.h"
+#include <stdio.h>
 
-struct Package {
-
-};
+#define ARGB16(a, r, g, b)  (((a) << 15) | (r) | ((g) << 5) | ((b) << 10))
 
 static int l_test_gfx(lua_State *L) {
     int x_arg = luaL_checknumber(L, 1);
     int y_arg = luaL_checknumber(L, 2);
 
     os.vram0[x_arg + (y_arg << 8)] = ARGB16(1, 31, 31, 31);
-    os.vram1[x_arg + (y_arg << 8)] = ARGB16(1, 31, 31, 31);
+    // os.vram1[x_arg + (y_arg << 8)] = ARGB16(1, 31, 31, 31);
     
     return 0;
 }
@@ -102,5 +98,3 @@ void dir_list(void) {
     // printf("\nNum entries: %d\n", num_entries);
 }
 */
-
-#endif
