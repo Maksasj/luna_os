@@ -3,17 +3,17 @@ project(Emulator)
 
 include_directories("./")
 include_directories("../")
-include_directories("../luna_os")
-include_directories("../luna_os/kernel")
+include_directories("../core/")
+include_directories("../core/kernel")
 include_directories("../../3dparty/sdl/include")
 include_directories("../../3dparty/")
 
 file(GLOB_RECURSE MAIN-SRC
     "../../3dparty/lua/*.c"
     "*.c"
-    "../luna_os/luna_os.c"
-    "../luna_os/lua_vm/lua_vm.c"
-    "../luna_os/kernel/kernel.c"
+    "../core/luna_os.c"
+    "../core/lua_vm/lua_vm.c"
+    "../core/kernel/kernel.c"
 )
 
 add_executable(Emulator ${MAIN-SRC})

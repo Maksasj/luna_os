@@ -1,39 +1,44 @@
 kernel.lua.require("packages/bush/ibm_bios_font.lua")
 
-function print_ascii_values(str, lineOffset)
-    characterCount = 0
+LibLunaPointer = {}
+LibLunaPointer.__index = LibLunaPointer
 
-    for i = 1, #str do
-        c = string.byte(str:sub(i,i))
+function LibLunaPointer:new(rawPointer)
+   local pointer = {}             -- our new object
+   setmetatable(pointer, LibLunaPointer)  -- make Account handle lookup
+   pointer.value = rawPointer      -- initialize our object
+   return pointer
+end
 
-        for index = 1, 64 do
-            value = ibm_bios_font[c][index]
+function LibLunaPointer.der_u16(self, value)
+   kernel.lua._dereference_pointer_u16_left(self.value, value)
+end
 
-            x = index % 8 + characterCount * 8
-            y = index / 8 + lineOffset
+libluna = {
+    gfx = {
+        get_vram_pointer = function()
+            local pointer = kernel.gfx.get_raw_vram_pointer()
+            return LibLunaPointer:new(pointer)
+        end,
 
-            if value == 1 then
-                kernel.gfx.test_gfx(x, y)
-            end
+        to_argb16 = function(a, r, g, b)
+            return ((a) << 15) | (r) | ((g) << 5) | ((b) << 10)
         end
+    },
+    c = {
+        char = {
+            size = 1
+        },
+        short = {
+            size = 2
+        },
+        int = {
+            size = 4
+        },
+        long_long = {
+            size = 8
+        }
+    }
+}
 
-        characterCount = characterCount + 1
-        ::continue::
-    end
-end
-
-function print_ascii_table(table)
-    for key, value in pairs(table) do
-        print_ascii_values(value, (key - 1) * 8)
-    end
-end
-
-function testFunction()
-    while true do
-        print_ascii_table({
-            "Hello from luna os 0.0.1v"
-        })
-
-        kernel.gfx.wait_for_vblank()
-    end
-end
+table.insert(kernel.gfx, get_vram_pointer)

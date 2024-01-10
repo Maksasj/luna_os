@@ -25,7 +25,7 @@ void setup_gfx(LunaOS* os_instance) {
 void setup_fat() {
     bool init_ok = fatInitDefault();
     if (!init_ok) {
-        perror("fatInitDefault()");
+        fire_error("Failed to initialize fat library");
     } else {
         char *cwd = getcwd(NULL, 0);
         // printf("Current dir: %s\n\n", cwd);
