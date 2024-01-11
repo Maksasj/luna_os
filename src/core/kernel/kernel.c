@@ -4,6 +4,33 @@ void create_pointer_object(lua_State* L, void* pointer) {
     lua_pushinteger(L, (long long) pointer);
 }
 
+int l_malloc(lua_State *L) {
+    unsigned long long size = luaL_checknumber(L, 1);
+    void* ptr = malloc(size);
+    printf("Allocated memory at %llu with size %llu \n", ptr, size);
+
+    create_pointer_object(L, ptr);
+    return 1;
+}
+
+int l_free(lua_State *L) {
+    void* ptr = (void*) (unsigned long long) luaL_checknumber(L, 1);
+    printf("Freeing memory segment at %llu \n", ptr);
+
+    free(ptr);
+    return 0;
+}
+
+int l_dma_copy(lua_State *L) {
+    void* src = (void*) (long long) luaL_checknumber(L, 1);
+    void* dst = (void*) (long long) luaL_checknumber(L, 2);
+    long long size = luaL_checknumber(L, 3);
+
+    platform_memcpy(src, dst, size);
+
+    return 0;
+}
+
 int l_require(lua_State *L) {
     const char* str = luaL_checkstring(L, 1);
 
@@ -17,8 +44,18 @@ int l_wait_for_vblank(lua_State *L) {
     return 0;
 }
 
-int l_get_vram_pointer(lua_State *L) {
-    create_pointer_object(L, os.vram);
+int l_get_vram0_pointer(lua_State *L) {
+    create_pointer_object(L, os.vram0);
+    return 1;
+}
+
+int l_get_vram1_pointer(lua_State *L) {
+    create_pointer_object(L, os.vram1);
+    return 1;
+}
+
+int l_get_vmap_pointer(lua_State *L) {
+    create_pointer_object(L, os.vmap);
     return 1;
 }
 
@@ -96,8 +133,20 @@ void setup_kernel_lua_interface(LuaVM* vm) {
         lua_newtable(vm->lua_state ); /* ==> stack: ..., {}, "b", {} */
 
         {
-            lua_pushliteral(vm->lua_state, "get_raw_vram_pointer" );
-            lua_pushcfunction(vm->lua_state, l_get_vram_pointer);
+            lua_pushliteral(vm->lua_state, "get_raw_vram0_pointer" );
+            lua_pushcfunction(vm->lua_state, l_get_vram0_pointer);
+            lua_settable(vm->lua_state, -3);
+        }
+
+        {
+            lua_pushliteral(vm->lua_state, "get_raw_vram1_pointer" );
+            lua_pushcfunction(vm->lua_state, l_get_vram1_pointer);
+            lua_settable(vm->lua_state, -3);
+        }
+
+        {
+            lua_pushliteral(vm->lua_state, "get_raw_vmap_pointer" );
+            lua_pushcfunction(vm->lua_state, l_get_vmap_pointer);
             lua_settable(vm->lua_state, -3);
         }
 
@@ -124,6 +173,28 @@ void setup_kernel_lua_interface(LuaVM* vm) {
             lua_pushcfunction(vm->lua_state, l_get_key);
             lua_settable(vm->lua_state, -3);
         }
+
+
+
+        {
+            lua_pushliteral(vm->lua_state, "_malloc" );
+            lua_pushcfunction(vm->lua_state, l_malloc);
+            lua_settable(vm->lua_state, -3);
+        }
+
+        {
+            lua_pushliteral(vm->lua_state, "_free" );
+            lua_pushcfunction(vm->lua_state, l_free);
+            lua_settable(vm->lua_state, -3);
+        }
+
+        {
+            lua_pushliteral(vm->lua_state, "_dma_copy" );
+            lua_pushcfunction(vm->lua_state, l_dma_copy);
+            lua_settable(vm->lua_state, -3);
+        }
+
+
 
         {
             lua_pushliteral(vm->lua_state, "_dereference_pointer_u8_left" );

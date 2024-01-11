@@ -12,13 +12,19 @@
 #include "platform.h"
 
 void setup_gfx(LunaOS* os_instance) {
-	videoSetMode(MODE_5_2D); 
-    videoSetModeSub(MODE_5_2D);
+	videoSetMode(MODE_0_2D);
+    videoSetModeSub(MODE_0_2D);
+    vramSetBankA(VRAM_A_MAIN_BG);
 
-	int bg0 = bgInit(3, BgType_Bmp16, BgSize_B16_256x256, 0, 0);
+    int bg0T = bgInit(3, BgType_Text8bpp, BgSize_T_256x256, 0, 1);
+	int bg0B = bgInit(2, BgType_Bmp16, BgSize_B16_256x256, 0, 0);
+	
 	int bg1 = bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0, 0);
 
-	os_instance->vram = (u16*) bgGetGfxPtr(bg0);
+	os_instance->vram0 = (u16*) bgGetGfxPtr(bg0B);
+    os_instance->vram1 = (u16*) bgGetGfxPtr(bg0T);
+
+    os_instance->vmap = (u16*) bgGetMapPtr(bg0T);
 }
 
 void setup_fat() {
@@ -38,7 +44,15 @@ void setup_platform(LunaOS* os_instance) {
 }
 
 void platform_fire_error(const char* error_message) {
+    while(1) {
+        for (int y = 0; y < 192; y++) {
+            for (int x = 0; x < 256; x++) {
+                os.vram0[x + (y << 8)] = ARGB16(1, rand() % 31, 0, 0);
+            }
+        }
 
+        platform_wait_vblank();
+    }
 }
 
 void platform_wait_vblank() {
@@ -75,4 +89,8 @@ int platform_get_key(long long keyCode) {
     } else if (keyCode == 11) {
         return buttons & KEY_Y;
     }
+}
+
+void platform_memcpy(void* src, void* dst, unsigned long size) {
+    dmaCopy(src, dst, size);
 }

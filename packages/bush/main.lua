@@ -48,8 +48,28 @@ function main()
             bushEngine:print_line("pressed key RIGHT")
             redraw()
         end
+
         kernel.gfx.wait_for_vblank()
     end
 end
 
+function setup() 
+    local vram1_ptr = LibLunaPointer:new(kernel.gfx.get_raw_vram1_pointer())
+    for character = 0, 255 do
+        for index = 1, 64 do
+            local value = ibm_bios_font[character][index]
+            
+            vram1_ptr:der_u8_l(value)
+
+            vram1_ptr.value = vram1_ptr.value + 1
+        end
+    end
+
+    local palette_ptr = LibLunaPointer:new(0x0000000005000000)
+    palette_ptr:der_u16_l(libluna.gfx.colors.BLACK)
+    palette_ptr.value = palette_ptr.value + 2
+    palette_ptr:der_u16_l(libluna.gfx.colors.WHITE)
+end
+
+-- setup()
 main()

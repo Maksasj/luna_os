@@ -2,7 +2,7 @@ kernel.lua.require("packages/luna/ibm_bios_font.lua")
 kernel.lua.require("packages/luna/c_pointer.lua")
 
 local function get_vram_pointer()
-    local pointer = kernel.gfx.get_raw_vram_pointer()
+    local pointer = kernel.gfx.get_raw_vram0_pointer()
     return LibLunaPointer:new(pointer)
 end
 
