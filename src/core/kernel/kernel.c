@@ -1,88 +1,81 @@
 #include "kernel.h"
 
-#include <stdio.h>
-
-#define ARGB16(a, r, g, b)  (((a) << 15) | (r) | ((g) << 5) | ((b) << 10))
-
-static int l_test_gfx(lua_State *L) {
-    int x_arg = luaL_checknumber(L, 1);
-    int y_arg = luaL_checknumber(L, 2);
-
-    os.vram0[x_arg + (y_arg << 8)] = ARGB16(1, 31, 31, 31);
-    // os.vram1[x_arg + (y_arg << 8)] = ARGB16(1, 31, 31, 31);
-    
-    return 0;
+void create_pointer_object(lua_State* L, void* pointer) {
+    lua_pushinteger(L, (long long) pointer);
 }
 
-static int l_require(lua_State *L) {
-    char* str = luaL_checkstring(L, 1);
+int l_require(lua_State *L) {
+    const char* str = luaL_checkstring(L, 1);
 
     run_script(str);
 
     return 0;
 }
 
-static int l_wait_for_vblank(lua_State *L) {
-    swiWaitForVBlank();
-
+int l_wait_for_vblank(lua_State *L) {
+    platform_wait_vblank();
     return 0;
 }
 
-void create_pointer_object(lua_State* L, void* pointer) {
-    lua_pushinteger(L, (long long) pointer);
-}
-
-static int l_get_vram_pointer(lua_State *L) {
+int l_get_vram_pointer(lua_State *L) {
     create_pointer_object(L, os.vram0);
     return 1;
 }
 
-static int l_dereference_pointer_u8_left(lua_State *L) {
+int l_dereference_pointer_u8_left(lua_State *L) {
     long long pointer = luaL_checknumber(L, 1);
     long long value = luaL_checknumber(L, 2);
-    *((unsigned char*) ((void*) pointer)) = value & 0xFF;
+    *((unsigned char*) ((void*) pointer)) = value & BIT_MASK_8U;
+    return 0;
 }
 
-static int l_dereference_pointer_u16_left(lua_State *L) {
+int l_dereference_pointer_u16_left(lua_State *L) {
     double pointer = luaL_checknumber(L, 1);
     long long value = luaL_checknumber(L, 2);
-    *((unsigned short*) ((void*) (long long) pointer)) = value & 0xFFFF;
+    *((unsigned short*) ((void*) (long long) pointer)) = value & BIT_MASK_16U;
+    return 0;
 }
 
-static int l_dereference_pointer_u32_left(lua_State *L) {
+int l_dereference_pointer_u32_left(lua_State *L) {
     long long pointer = luaL_checknumber(L, 1);
     long long value = luaL_checknumber(L, 2);
-    *((unsigned int*) ((void*) pointer)) = value & 0xFFFFFFFF;
+    *((unsigned int*) ((void*) pointer)) = value & BIT_MASK_32U;
+    return 0;
 }
 
-static int l_dereference_pointer_u64_left(lua_State *L) {
+int l_dereference_pointer_u64_left(lua_State *L) {
     long long pointer = luaL_checknumber(L, 1);
     long long value = luaL_checknumber(L, 2);
-    *((unsigned long long*) ((void*) pointer)) = value & 0xFFFFFFFFFFFFFFFF;
+    *((unsigned long long*) ((void*) pointer)) = value & BIT_MASK_64U;
+    return 0;
 }
 
-static int l_dereference_pointer_u8_right(lua_State *L) {
+int l_dereference_pointer_u8_right(lua_State *L) {
     void* pointer = (void*) ((long long) luaL_checknumber(L, 1));
-    long long value = *((long long*) pointer) & 0xFF;
+    long long value = *((long long*) pointer) & BIT_MASK_8U;
     lua_pushinteger(L, value);
+    return 1;
 }
 
-static int l_dereference_pointer_u16_right(lua_State *L) {
+int l_dereference_pointer_u16_right(lua_State *L) {
     void* pointer = (void*) ((long long) luaL_checknumber(L, 1));
-    long long value = *((long long*) pointer) & 0xFFFF;
+    long long value = *((long long*) pointer) & BIT_MASK_16U;
     lua_pushinteger(L, value);
+    return 1;
 }
 
-static int l_dereference_pointer_u32_right(lua_State *L) {
+int l_dereference_pointer_u32_right(lua_State *L) {
     void* pointer = (void*) ((long long) luaL_checknumber(L, 1));
-    long long value = *((long long*) pointer) & 0xFFFFFFFF;
+    long long value = *((long long*) pointer) & BIT_MASK_32U;
     lua_pushinteger(L, value);
+    return 1;
 }
 
-static int l_dereference_pointer_u64_right(lua_State *L) {
+int l_dereference_pointer_u64_right(lua_State *L) {
     void* pointer = (void*) ((long long) luaL_checknumber(L, 1));
-    long long value = *((long long*) pointer) & 0xFFFFFFFFFFFFFFFF;
+    long long value = *((long long*) pointer) & BIT_MASK_64U;
     lua_pushinteger(L, value);
+    return 1;
 }
 
 void setup_kernel_lua_interface(LuaVM* vm) {
@@ -90,12 +83,6 @@ void setup_kernel_lua_interface(LuaVM* vm) {
     {
         lua_pushliteral(vm->lua_state, "gfx" ); /* ==> stack: ..., {}, "b" */
         lua_newtable(vm->lua_state ); /* ==> stack: ..., {}, "b", {} */
-
-        {
-            lua_pushliteral(vm->lua_state, "test_gfx" );
-            lua_pushcfunction(vm->lua_state, l_test_gfx);
-            lua_settable(vm->lua_state, -3);
-        }
 
         {
             lua_pushliteral(vm->lua_state, "get_raw_vram_pointer" );
@@ -146,8 +133,6 @@ void setup_kernel_lua_interface(LuaVM* vm) {
             lua_settable(vm->lua_state, -3);
         }
 
-
-
         {
             lua_pushliteral(vm->lua_state, "_dereference_pointer_u8_right" );
             lua_pushcfunction(vm->lua_state, l_dereference_pointer_u8_right);
@@ -155,13 +140,13 @@ void setup_kernel_lua_interface(LuaVM* vm) {
         }
 
         {
-            lua_pushliteral(vm->lua_state, "_dereference_pointer_u64_right" );
+            lua_pushliteral(vm->lua_state, "_dereference_pointer_u16_right" );
             lua_pushcfunction(vm->lua_state, l_dereference_pointer_u16_right);
             lua_settable(vm->lua_state, -3);
         }
 
         {
-            lua_pushliteral(vm->lua_state, "_dereference_pointer_u64_right" );
+            lua_pushliteral(vm->lua_state, "_dereference_pointer_u32_right" );
             lua_pushcfunction(vm->lua_state, l_dereference_pointer_u32_right);
             lua_settable(vm->lua_state, -3);
         }
@@ -172,8 +157,6 @@ void setup_kernel_lua_interface(LuaVM* vm) {
             lua_settable(vm->lua_state, -3);
         }
 
-
-        
         lua_settable( vm->lua_state, -3 ); /* ==> stack: ..., {} */
     }
     lua_setglobal(vm->lua_state, "kernel" ); /* ==> stack: ... */

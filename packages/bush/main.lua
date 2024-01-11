@@ -1,4 +1,10 @@
-kernel.lua.require("packages/bush/libluna.lua")
+kernel.lua.require("packages/luna/libluna.lua")
+
+bush = {
+    lines = {
+        "poggers !"
+    }
+}
 
 function print_ascii_values(str, lineOffset)
     local characterCount = 0
@@ -14,8 +20,8 @@ function print_ascii_values(str, lineOffset)
 
             if value == 1 then
                 local pointer = libluna.gfx.get_vram_pointer()
-                pointer.value = pointer.value + libluna.c.short.size * (x + (y << 8))
-                pointer.der_u16(pointer, libluna.gfx.to_argb16(0, 31, 31, 31))
+                pointer.value = pointer.value + libluna.types.short.size * (x + (y << 8))
+                pointer:der_u16_l(libluna.gfx.colors.YELLOW)
             end
         end
 
@@ -30,9 +36,7 @@ function print_ascii_table(table)
 end
 
 while true do
-    print_ascii_table({
-        "Hello world from luna os 0.0.1v"
-    })
+    print_ascii_table(bush.lines)
 
     kernel.gfx.wait_for_vblank()
 end
