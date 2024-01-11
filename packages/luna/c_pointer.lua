@@ -30,14 +30,14 @@ function LibLunaPointer:der_u8_r()
    return kernel.lua._dereference_pointer_u8_right(self.value)
 end
 
-function LibLunaPointer:der_u16_r(value)
+function LibLunaPointer:der_u16_r()
    return kernel.lua._dereference_pointer_u16_right(self.value)
 end
 
-function LibLunaPointer:der_u32_r(value)
+function LibLunaPointer:der_u32_r()
    return kernel.lua._dereference_pointer_u32_right(self.value)
 end
 
-function LibLunaPointer:der_u64_r(value)
+function LibLunaPointer:der_u64_r()
    return kernel.lua._dereference_pointer_u64_right(self.value)
 end
