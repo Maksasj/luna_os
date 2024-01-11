@@ -15,6 +15,8 @@ const SDL_Rect window_rect = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 
 void *pixels;
 
+int keys[12] = { 0 };
+
 void setup_gfx(LunaOS* os_instance) {
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -25,7 +27,7 @@ void setup_gfx(LunaOS* os_instance) {
     int pitch;
     SDL_LockTexture(texture, &window_rect, &pixels, &pitch);
 
-    os.vram0 = pixels;
+    os.vram = pixels;
 }
 
 void setup_fat() {
@@ -52,8 +54,44 @@ void platform_wait_vblank() {
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_EVENT_QUIT:
-                // loopShouldStop = 1;
                 break;
+
+            case SDL_EVENT_KEY_DOWN: {
+                int key = event.key.keysym.scancode;
+
+                if(key == SDL_SCANCODE_A)       keys[0] = 1;
+                if(key == SDL_SCANCODE_B)       keys[1] = 1;
+                if(key == SDL_SCANCODE_SELECT)  keys[2] = 1;
+                if(key == SDL_SCANCODE_KP_ENTER)keys[3] = 1;
+                if(key == SDL_SCANCODE_RIGHT)   keys[4] = 1;
+                if(key == SDL_SCANCODE_LEFT)    keys[5] = 1;
+                if(key == SDL_SCANCODE_UP)      keys[6] = 1;
+                if(key == SDL_SCANCODE_DOWN)    keys[7] = 1;
+                if(key == SDL_SCANCODE_R)       keys[8] = 1;
+                if(key == SDL_SCANCODE_L)       keys[9] = 1;
+                if(key == SDL_SCANCODE_X)       keys[10] = 1;
+                if(key == SDL_SCANCODE_Y)       keys[11] = 1;
+
+                break;
+            }
+            case SDL_EVENT_KEY_UP: {
+                int key = event.key.keysym.scancode;
+
+                if(key == SDL_SCANCODE_A)       keys[0] = 0;
+                if(key == SDL_SCANCODE_B)       keys[1] = 0;
+                if(key == SDL_SCANCODE_SELECT)  keys[2] = 0;
+                if(key == SDL_SCANCODE_KP_ENTER)keys[3] = 0;
+                if(key == SDL_SCANCODE_RIGHT)   keys[4] = 0;
+                if(key == SDL_SCANCODE_LEFT)    keys[5] = 0;
+                if(key == SDL_SCANCODE_UP)      keys[6] = 0;
+                if(key == SDL_SCANCODE_DOWN)    keys[7] = 0;
+                if(key == SDL_SCANCODE_R)       keys[8] = 0;
+                if(key == SDL_SCANCODE_L)       keys[9] = 0;
+                if(key == SDL_SCANCODE_X)       keys[10] = 0;
+                if(key == SDL_SCANCODE_Y)       keys[11] = 0;
+
+                break;
+            }
         }
     }
 
@@ -61,5 +99,9 @@ void platform_wait_vblank() {
     int pitch;
     SDL_LockTexture(texture, &window_rect, &pixels, &pitch);
 
-    os.vram0 = pixels;
+    os.vram = pixels;
+}
+
+int platform_get_key(long long keyCode) {
+    return keys[keyCode];
 }

@@ -7,7 +7,7 @@ local function get_vram_pointer()
 end
 
 local function to_argb16(a, r, g, b)
-    return ((a) << 15) | (r) | ((g) << 5) | ((b) << 10) & 0xFFFF
+    return ((a & 0xFFFF) << 15) | (r) | ((g & 0xFFFF) << 5) | ((b & 0xFFFF) << 10) & 0xFFFF
 end
 
 libluna = {
@@ -31,5 +31,19 @@ libluna = {
         short     = { size = 2, mask = 0xFFFF },
         int       = { size = 4, mask = 0xFFFFFFFF },
         long_long = { size = 8, mask = 0xFFFFFFFFFFFFFFFF }
+    },
+    keycodes = {
+        KEY_A = 0,
+        KEY_B = 1,
+        KEY_SELECT = 2,
+        KEY_START = 3,
+        KEY_RIGHT = 4,
+        KEY_LEFT = 5,
+        KEY_UP = 6,
+        KEY_DOWN = 7,
+        KEY_R = 8,
+        KEY_L = 9,
+        KEY_X = 10,
+        KEY_Y = 11
     }
 }

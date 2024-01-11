@@ -18,7 +18,16 @@ int l_wait_for_vblank(lua_State *L) {
 }
 
 int l_get_vram_pointer(lua_State *L) {
-    create_pointer_object(L, os.vram0);
+    create_pointer_object(L, os.vram);
+    return 1;
+}
+
+int l_get_key(lua_State *L) {
+    long long keyCode = luaL_checknumber(L, 1);
+    long long result = platform_get_key(keyCode);
+
+    lua_pushinteger(L, (long long) result);
+
     return 1;
 }
 
@@ -78,6 +87,8 @@ int l_dereference_pointer_u64_right(lua_State *L) {
     return 1;
 }
 
+
+
 void setup_kernel_lua_interface(LuaVM* vm) {
     lua_newtable(vm->lua_state);  /* ==> stack: ..., {} */
     {
@@ -108,6 +119,11 @@ void setup_kernel_lua_interface(LuaVM* vm) {
             lua_settable(vm->lua_state, -3);
         }
 
+        {
+            lua_pushliteral(vm->lua_state, "get_key" );
+            lua_pushcfunction(vm->lua_state, l_get_key);
+            lua_settable(vm->lua_state, -3);
+        }
 
         {
             lua_pushliteral(vm->lua_state, "_dereference_pointer_u8_left" );

@@ -8,6 +8,6 @@ GAME_AUTHOR		:= maksasj
 # GAME_ICON	?= $(BLOCKSDS)/sys/icon.bmp
 
 SOURCEDIRS		:= src/core src/dsi 3dparty/lua
-INCLUDEDIRS		:= 3dparty 3dparty/lua 
+INCLUDEDIRS		:= 3dparty 3dparty/lua src/core
 
 include $(BLOCKSDS)/sys/default_makefiles/rom_arm9/Makefile

@@ -5,8 +5,7 @@
 
 typedef struct LunaOS {
     // Scren buffers
-    unsigned short* vram0;
-    unsigned short* vram1;
+    unsigned short* vram;
 
     // Lua virtual machine
     LuaVM vm;

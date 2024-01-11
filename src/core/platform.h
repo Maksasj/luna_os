@@ -13,4 +13,6 @@ void platform_wait_vblank();
 
 void platform_fire_error(const char* error_message);
 
+int platform_get_key(long long keyCode);
+
 #endif
