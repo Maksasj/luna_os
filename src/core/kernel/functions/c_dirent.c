@@ -4,7 +4,6 @@ int l_opendir(lua_State *L) {
     const char* path = luaL_checkstring(L, 1);
     void* dirp = opendir(path);
     lua_pushinteger(L, (long long) dirp);
-    printf("Opened dir with path %s, %p\n", path, dirp);
     return 1;
 }
 
@@ -12,7 +11,6 @@ int l_readdir(lua_State *L) {
     void* dirp = (void*) (unsigned long long) luaL_checknumber(L, 1);
     struct dirent *cur = readdir(dirp);
     lua_pushinteger(L, (long long) cur);
-    printf("Reading dir with dirp %p\n", dirp);
     return 1;
 }
 
@@ -20,14 +18,12 @@ int l_telldir(lua_State *L) {
     void* dirp = (void*) (unsigned long long) luaL_checknumber(L, 1);
     int index = telldir(dirp);
     lua_pushinteger(L, (long long) index);
-    printf("Telling dir with dirp %p\n", dirp);
     return 1;
 }
 
 int l_closedir(lua_State *L) {
     void* dirp = (void*) (unsigned long long) luaL_checknumber(L, 1);
     closedir(dirp);
-    printf("Closing dir with dirp %p\n", dirp);
     return 0;
 }
 
