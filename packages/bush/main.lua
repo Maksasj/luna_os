@@ -6,10 +6,21 @@ function main()
 
     bushEngine:setup()
 
-    bushEngine:print_line("poggers")
-    bushEngine:print_line("another line")
-    bushEngine:print_line("and again another")
-    bushEngine:print_line("lol")
+    local dirp = kernel._opendir(".")
+    if dirp == 0 then
+        bushEngine:print_line("Failed to open directory")
+    end
+
+    while true do
+        local cur = kernel._readdir(dirp)
+
+        if cur == 0 then break end
+
+        local name = kernel._dirent_get_name(cur)
+        bushEngine:print_line(name)
+    end
+
+    kernel._closedir(dirp)
 
     function redraw()
         bushEngine:draw_lines()

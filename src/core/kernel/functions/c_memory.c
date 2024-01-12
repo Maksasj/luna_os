@@ -23,7 +23,7 @@ int l_dma_copy(lua_State *L) {
     void* dst = (void*) (long long) luaL_checknumber(L, 2);
     long long size = luaL_checknumber(L, 3);
 
-    platform_memcpy(src, dst, size);
+    p_memcpy(src, dst, size);
 
     return 0;
 }

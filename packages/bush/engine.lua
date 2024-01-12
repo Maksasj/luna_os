@@ -89,7 +89,7 @@ function BushEngine:setup()
             end
         end
 
-        local palette_ptr = LibLunaPointer:new(0x0000000005000000)
+        local palette_ptr = LibLunaPointer:new(0x0000000005000000) -- BG_PALETTE
         palette_ptr:der_u16_l(libluna.gfx.colors.BLACK)
         palette_ptr.value = palette_ptr.value + 2
         palette_ptr:der_u16_l(libluna.gfx.colors.WHITE)

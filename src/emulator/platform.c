@@ -17,7 +17,7 @@ void *pixels;
 
 int keys[12] = { 0 };
 
-void setup_gfx(LunaOS* os_instance) {
+void p_setup_gfx(LunaOS* os_instance) {
     SDL_Init(SDL_INIT_VIDEO);
 
     win = SDL_CreateWindow("LunaOS Emulator", WINDOW_WIDTH, WINDOW_HEIGHT, 0);
@@ -30,21 +30,21 @@ void setup_gfx(LunaOS* os_instance) {
     os.vram0 = pixels;
 }
 
-void setup_fat() {
+void p_setup_fat() {
 
 }
 
-void setup_platform(LunaOS* os_instance) {
-    setup_gfx(os_instance);
-    setup_fat();
+void p_setup(LunaOS* os_instance) {
+    p_setup_gfx(os_instance);
+    p_setup_fat();
 }
 
-void platform_fire_error(const char* error_message) {
+void p_fire_error(const char* error_message) {
     printf("%s \n", error_message);
     exit(1);
 }
 
-void platform_wait_vblank() {
+void p_wait_vblank() {
     SDL_UnlockTexture(texture);
     SDL_RenderTexture(renderer, texture, &window_rect_f, &window_rect_f);
 
@@ -102,14 +102,14 @@ void platform_wait_vblank() {
     os.vram0 = pixels;
 }
 
-int platform_get_key(long long keyCode) {
+int p_get_key(long long keyCode) {
     return keys[keyCode];
 }
 
-void platform_memcpy(void* src, void* dst, unsigned long size) {
+void p_memcpy(void* src, void* dst, unsigned long size) {
     memcpy(dst, src, size);
 }
 
-Platform platform_get_platform() {
+Platform p_get_platform() {
     return DESKTOP;
 }

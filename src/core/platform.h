@@ -8,20 +8,22 @@ typedef enum Platform {
     DESKTOP = 1
 } Platform;
 
-void setup_gfx(LunaOS* os_instance);
+// setup
+void p_setup_gfx(LunaOS* os_instance);
+void p_setup_fat();
+void p_setup(LunaOS* os_instance);
 
-void setup_fat();
+// gfx
+void p_wait_vblank();
 
-void setup_platform(LunaOS* os_instance);
+// io
+int p_get_key(long long keyCode);
 
-void platform_wait_vblank();
+// memory
+void p_memcpy(void* src, void* dst, unsigned long size);
 
-void platform_fire_error(const char* error_message);
-
-int platform_get_key(long long keyCode);
-
-void platform_memcpy(void* src, void* dst, unsigned long size);
-
-Platform platform_get_platform();
+// general
+void p_fire_error(const char* error_message);
+Platform p_get_platform();
 
 #endif

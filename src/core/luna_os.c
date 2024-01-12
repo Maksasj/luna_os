@@ -7,7 +7,7 @@ LunaOS os = {};
 
 int main(int argc, char *argv[]) {
     // Setup platform
-    setup_platform(&os);
+    p_setup(&os);
 
     // Setup lua virtual machine and start boot lua package
     start_lua_vm(&os.vm);

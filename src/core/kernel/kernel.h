@@ -10,6 +10,7 @@
 #include "functions/c_memory.h"
 #include "functions/c_platform.h"
 #include "functions/c_gfx.h"
+#include "functions/c_dirent.h"
 
 typedef struct LuaKernelFunction {
     const char* name;
@@ -32,6 +33,15 @@ static LuaKernelFunction lua_kernel_functions[] = {
     { "_malloc", l_malloc },
     { "_free", l_free },
     { "_dma_copy", l_dma_copy },
+
+    // dirent
+    { "_opendir", l_opendir },
+    { "_readdir", l_readdir },
+    { "_telldir", l_telldir },
+    { "_closedir", l_closedir },
+    { "_dirent_get_ino", l_dirent_get_ino},
+    { "_dirent_get_reclen", l_dirent_get_reclen},
+    { "_dirent_get_name", l_dirent_get_name},
     
     // pointer
     { "_dereference_pointer_u8_left", l_dereference_pointer_u8_left }, 

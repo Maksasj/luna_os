@@ -18,7 +18,7 @@ char* read_file(const char* filename) {
     FILE* file = fopen(filename, "rb");
 
     if (file == NULL) {
-        platform_fire_error("Failed to open file\n");
+        p_fire_error("Failed to open file\n");
         return NULL;
     }
 
@@ -30,7 +30,7 @@ char* read_file(const char* filename) {
 
     if (content == NULL) {
         fclose(file);
-        platform_fire_error("Failed to allocate memory for lua code\n");
+        p_fire_error("Failed to allocate memory for lua code\n");
         return NULL;
     }
 
@@ -48,7 +48,7 @@ void run_script(const char* entryPointPath) {
     int luaRes = luaL_dostring(os.vm.lua_state, lua_code);
 
     if(luaRes)
-        platform_fire_error(lua_tostring(os.vm.lua_state, -1));
+        p_fire_error(lua_tostring(os.vm.lua_state, -1));
 
     free(lua_code);
 }

@@ -11,7 +11,7 @@
 
 #include "platform.h"
 
-void setup_gfx(LunaOS* os_instance) {
+void p_setup_gfx(LunaOS* os_instance) {
 	videoSetMode(MODE_0_2D);
     videoSetModeSub(MODE_0_2D);
     vramSetBankA(VRAM_A_MAIN_BG);
@@ -27,11 +27,11 @@ void setup_gfx(LunaOS* os_instance) {
     os_instance->vmap = (u16*) bgGetMapPtr(bg0T);
 }
 
-void setup_fat() {
+void p_setup_fat() {
     bool init_ok = fatInitDefault();
 
     if (!init_ok) {
-        platform_fire_error("Failed to initialize fat library");
+        p_fire_error("Failed to initialize fat library");
     } else {
         char *cwd = getcwd(NULL, 0);
         // printf("Current dir: %s\n\n", cwd);
@@ -39,12 +39,12 @@ void setup_fat() {
     }
 }
 
-void setup_platform(LunaOS* os_instance) {
-    setup_gfx(os_instance);
-    setup_fat();
+void p_setup(LunaOS* os_instance) {
+    p_setup_gfx(os_instance);
+    p_setup_fat();
 }
 
-void platform_fire_error(const char* error_message) {
+void p_fire_error(const char* error_message) {
     while(1) {
         for (int y = 0; y < 192; y++) {
             for (int x = 0; x < 256; x++) {
@@ -52,16 +52,16 @@ void platform_fire_error(const char* error_message) {
             }
         }
 
-        platform_wait_vblank();
+        p_wait_vblank();
     }
 }
 
-void platform_wait_vblank() {
+void p_wait_vblank() {
     scanKeys();
     swiWaitForVBlank();
 }
 
-int platform_get_key(long long keyCode) {
+int p_get_key(long long keyCode) {
     // unsigned short buttons = keysHeld();
     unsigned short buttons = ~(*(unsigned short*) 0x04000130);
 
@@ -92,10 +92,10 @@ int platform_get_key(long long keyCode) {
     }
 }
 
-void platform_memcpy(void* src, void* dst, unsigned long size) {
+void p_memcpy(void* src, void* dst, unsigned long size) {
     dmaCopy(src, dst, size);
 }
 
-Platform platform_get_platform() {
+Platform p_get_platform() {
     return DSI;
 }

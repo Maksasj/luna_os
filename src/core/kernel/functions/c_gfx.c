@@ -3,7 +3,7 @@
 #include "../../luna_os.h"
 
 int l_wait_for_vblank(lua_State *L) {
-    platform_wait_vblank();
+    p_wait_vblank();
     return 0;
 }
 
