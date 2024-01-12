@@ -14,6 +14,8 @@ file(GLOB_RECURSE MAIN-SRC
     "../core/luna_os.c"
     "../core/lua_vm/lua_vm.c"
     "../core/kernel/kernel.c"
+    "../core/kernel/*.c"
+    "../core/kernel/functions/*.c"
 )
 
 add_executable(Emulator ${MAIN-SRC})

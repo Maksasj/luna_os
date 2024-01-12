@@ -29,6 +29,7 @@ void setup_gfx(LunaOS* os_instance) {
 
 void setup_fat() {
     bool init_ok = fatInitDefault();
+
     if (!init_ok) {
         platform_fire_error("Failed to initialize fat library");
     } else {
@@ -93,4 +94,8 @@ int platform_get_key(long long keyCode) {
 
 void platform_memcpy(void* src, void* dst, unsigned long size) {
     dmaCopy(src, dst, size);
+}
+
+Platform platform_get_platform() {
+    return DSI;
 }

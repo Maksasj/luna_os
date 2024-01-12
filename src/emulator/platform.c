@@ -109,3 +109,7 @@ int platform_get_key(long long keyCode) {
 void platform_memcpy(void* src, void* dst, unsigned long size) {
     memcpy(dst, src, size);
 }
+
+Platform platform_get_platform() {
+    return DESKTOP;
+}

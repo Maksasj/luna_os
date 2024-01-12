@@ -1,8 +1,8 @@
-kernel.lua.require("packages/luna/ibm_bios_font.lua")
-kernel.lua.require("packages/luna/c_pointer.lua")
+kernel._require("packages/luna/ibm_bios_font.lua")
+kernel._require("packages/luna/c_pointer.lua")
 
 local function get_vram_pointer()
-    local pointer = kernel.gfx.get_raw_vram0_pointer()
+    local pointer = kernel._get_raw_vram0_pointer()
     return LibLunaPointer:new(pointer)
 end
 
@@ -11,6 +11,10 @@ local function to_argb16(a, r, g, b)
 end
 
 libluna = {
+    platform = {
+        DSI = 0,
+        DESKTOP = 1
+    },
     gfx = {
         get_vram_pointer = get_vram_pointer,
         to_argb16 = to_argb16,

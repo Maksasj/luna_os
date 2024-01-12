@@ -6,28 +6,43 @@
 
 #include "../platform.h"
 
-#define BIT_MASK_8U     0xFF
-#define BIT_MASK_16U    0xFFFF
-#define BIT_MASK_32U    0xFFFFFFFF
-#define BIT_MASK_64U    0xFFFFFFFFFFFFFFFF
+#include "functions/c_pointer.h"
+#include "functions/c_memory.h"
+#include "functions/c_platform.h"
+#include "functions/c_gfx.h"
 
-void create_pointer_object(lua_State* L, void* pointer);
+typedef struct LuaKernelFunction {
+    const char* name;
+    void* function;
+} LuaKernelFunction;
 
-static int l_require(lua_State *L);
+static LuaKernelFunction lua_kernel_functions[] = {
+    // gfx
+    { "_get_raw_vram0_pointer", l_get_vram0_pointer },
+    { "_get_raw_vram1_pointer", l_get_vram1_pointer },
+    { "_get_raw_vmap_pointer", l_get_vmap_pointer },
+    { "_wait_for_vblank", l_wait_for_vblank },
+    
+    // platform
+    { "_require", l_require },
+    { "_get_key", l_get_key },
+    { "_platform", l_platform },
 
-static int l_wait_for_vblank(lua_State *L);
-
-static int l_get_vram_pointer(lua_State *L);
-
-static int l_dereference_pointer_u8_left(lua_State *L);
-static int l_dereference_pointer_u16_left(lua_State *L);
-static int l_dereference_pointer_u32_left(lua_State *L);
-static int l_dereference_pointer_u64_left(lua_State *L);
-
-static int l_dereference_pointer_u8_right(lua_State *L);
-static int l_dereference_pointer_u16_right(lua_State *L);
-static int l_dereference_pointer_u32_right(lua_State *L);
-static int l_dereference_pointer_u64_right(lua_State *L);
+    // memory
+    { "_malloc", l_malloc },
+    { "_free", l_free },
+    { "_dma_copy", l_dma_copy },
+    
+    // pointer
+    { "_dereference_pointer_u8_left", l_dereference_pointer_u8_left }, 
+    { "_dereference_pointer_u16_left", l_dereference_pointer_u16_left }, 
+    { "_dereference_pointer_u32_left", l_dereference_pointer_u32_left }, 
+    { "_dereference_pointer_u64_left", l_dereference_pointer_u64_left }, 
+    { "_dereference_pointer_u8_right", l_dereference_pointer_u8_right }, 
+    { "_dereference_pointer_u16_right", l_dereference_pointer_u16_right }, 
+    { "_dereference_pointer_u32_right", l_dereference_pointer_u32_right }, 
+    { "_dereference_pointer_u64_right", l_dereference_pointer_u64_right }
+};
 
 void setup_kernel_lua_interface(LuaVM* vm);
 
