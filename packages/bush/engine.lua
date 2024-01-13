@@ -21,12 +21,12 @@ function BushEngine:put_line(str, xPos, yPos)
     -- This prints line character by character
     for i = 1, #str do
         local char = str:sub(i, i)
-        BushEngine:putc(char, xPos + (i - 1), yPos)
+        self:putc(char, xPos + (i - 1), yPos)
     end
 
     -- This clears all other characters in line
     for i = 31, #str, -1 do
-        BushEngine:putc(" ", i, yPos)
+        self:putc(" ", i, yPos)
     end
 end
 
@@ -36,10 +36,10 @@ function BushEngine:draw_lines()
     for index = #self.lines, 1, -1 do
         local line = self.lines[index]
 
-        BushEngine:put_line(line, 0, 22 - linesDrawn)
+        self:put_line(line, 0, 23 - linesDrawn)
 
         linesDrawn = linesDrawn + 1
-        if linesDrawn == 23 then return end
+        if linesDrawn == 24 then return end
     end
 end
 
@@ -48,7 +48,11 @@ function BushEngine:print_line(line)
     self.lines[index + 1] = line
 end
 
-
+function BushEngine:print_lines(lines)
+    for index = 1, #lines do
+        self:print_line(lines[index])
+    end
+end
 
 function BG_TILE_RAM(base)
     return ((base) * 0x4000) + 0x06000000
@@ -110,6 +114,9 @@ function get_map_base(base)
     return (base >> 8) & 31
 end
 
+
+
+
 -- REG_BG3CNT_SUB 0x400100E
 
 -- REG_BG3PA_SUB 0x4001030
@@ -123,52 +130,70 @@ end
 -- REG_DISPCNT_SUB 0x04001000
 -- DISPLAY_ENABLE_SHIFT 8
 
-function BushEngine:setup()
-    if kernel._platform() == libluna.platform.DSI then -- DSI PLATFORM
-        -- -- Setup main screan text background
-        --     -- Setup background 
-        --     kernel._dereference_pointer_u16_left(0x400000E, BgSize_T_256x256 | BG_TILE_BASE(1) |  BG_MAP_BASE(0) | BG_PRIORITY(3) | BG_COLOR_256);
--- 
-        --     -- Set the affine matrix
-        --     kernel._dereference_pointer_u16_left(0x4000030, 1 << 8)
-        --     kernel._dereference_pointer_u16_left(0x4000032, 0)
-        --     kernel._dereference_pointer_u16_left(0x4000034, 0)
-        --     kernel._dereference_pointer_u16_left(0x4000036, 1 << 8)
-        --     
-        --     -- Set background at 0, 0
-        --     kernel._dereference_pointer_u16_left(0x4000038, 0)
-        --     kernel._dereference_pointer_u16_left(0x400003C, 0)
--- 
-        --     -- Enable background layer
-        --     local reg_dispcnt = kernel._dereference_pointer_u32_right(0x04000000)
-        --     kernel._dereference_pointer_u32_left(0x04000000, reg_dispcnt | (1 << (8 + 3)))
--- 
-        --     local tilePtr = BG_TILE_RAM(1)
-        --     local mapPtr = BG_MAP_RAM(0)
+surfacec = {
+    MAIN_SCREEN = {
+        CNT = 0x400000E,
     
-        -- Setup main screan text background
+        PA = 0x4000030,
+        PB = 0x4000032,
+        PC = 0x4000034,
+        PD = 0x4000036,
+    
+        X = 0x4000038,
+        Y = 0x400003C,
+    
+        DISPCNT = 0x04000000,
+    
+        vram = BG_TILE_RAM(1),
+        vmap = BG_MAP_RAM(0),
+
+        BG_PALETTE = 0x0000000005000000
+    },
+    BOTTOM_SCREEN = {
+        CNT = 0x400100E,
+    
+        PA = 0x4001030,
+        PB = 0x4001032,
+        PC = 0x4001034,
+        PD = 0x4001036,
+    
+        X = 0x4001038,
+        Y = 0x400103C,
+    
+        DISPCNT = 0x04001000,
+    
+        vram = BG_TILE_RAM_SUB(get_tile_base(1 + 4)),
+        vmap = BG_MAP_RAM_SUB(get_map_base(0 + 4)),
+
+        BG_PALETTE = 0x0000000005000400
+    }
+}
+
+function BushEngine:setup(surface)
+    if kernel._platform() == libluna.platform.DSI then -- DSI PLATFORM
         -- Setup background 
-            kernel._dereference_pointer_u16_left(0x400100E, BgSize_T_256x256 | BG_TILE_BASE(1) |  BG_MAP_BASE(0) | BG_PRIORITY(3) | BG_COLOR_256);
-            -- Set the affine matrix
-            kernel._dereference_pointer_u16_left(0x4001030, 1 << 8)
-            kernel._dereference_pointer_u16_left(0x4001032, 0)
-            kernel._dereference_pointer_u16_left(0x4001034, 0)
-            kernel._dereference_pointer_u16_left(0x4001036, 1 << 8)
-            -- Set background at 0, 0
-            kernel._dereference_pointer_u16_left(0x4001038, 0)
-            kernel._dereference_pointer_u16_left(0x400103C, 0)
-            -- Enable background layer
-            local reg_dispcnt = kernel._dereference_pointer_u32_right(0x04001000)
-            kernel._dereference_pointer_u32_left(0x04001000, reg_dispcnt | (1 << (8 + 3)))
-
-            local tilePtr = BG_TILE_RAM_SUB(get_tile_base(1 + 4))
-
+        kernel._dereference_pointer_u16_left(surface.CNT, BgSize_T_256x256 | BG_TILE_BASE(1) |  BG_MAP_BASE(0) | BG_PRIORITY(3) | BG_COLOR_256);
+        -- Set the affine matrix
+        kernel._dereference_pointer_u16_left(surface.PA, 1 << 8)
+        kernel._dereference_pointer_u16_left(surface.PB, 0)
+        kernel._dereference_pointer_u16_left(surface.PC, 0)
+        kernel._dereference_pointer_u16_left(surface.PD, 1 << 8)
+        -- Set background at 0, 0
+        kernel._dereference_pointer_u16_left(surface.X, 0)
+        kernel._dereference_pointer_u16_left(surface.Y, 0)
+        -- Enable background layer
+        local reg_dispcnt = kernel._dereference_pointer_u32_right(surface.DISPCNT)
+        kernel._dereference_pointer_u32_left(surface.DISPCNT, reg_dispcnt | (1 << (8 + 3)))
+-- 
+        tilePtr = surface.vram -- BG_TILE_RAM_SUB(get_tile_base(1 + 4))
+        mapPtr = surface.vmap -- BG_MAP_RAM_SUB(get_map_base(0 + 4)) 
+            
+            -- kernel._get_raw_vmap_pointer() -- BG_MAP_RAM_SUB(0 + 4)
             -- local tilePtr = kernel._get_raw_vram_pointer() -- BG_TILE_RAM_SUB(1 + 4)
-            local mapPtr = BG_MAP_RAM_SUB(get_map_base(0 + 4)) -- kernel._get_raw_vmap_pointer() -- BG_MAP_RAM_SUB(0 + 4)
 
         -- Setup platform dependent fields
-        BushEngine.vram = mapPtr
-        BushEngine._putc = function(vram, str, xPos, yPos)
+        self.vram = mapPtr
+        self._putc = function(vram, str, xPos, yPos)
             local c = string.byte(str)
             
             local pointer = LibLunaPointer:new(vram)
@@ -191,15 +216,14 @@ function BushEngine:setup()
         -- #define BG_PALETTE          ((u16 *)0x5000000) ///< Background palette memory
         -- #define BG_PALETTE_SUB      ((u16 *)0x5000400) ///< Background palette memory (sub engine)
 
-        local palette_ptr = LibLunaPointer:new(0x0000000005000400) -- BG_PALETTE
+        local palette_ptr = LibLunaPointer:new(surface.BG_PALETTE) -- BG_PALETTE
         palette_ptr:der_u16_l(libluna.gfx.colors.BLACK)
         palette_ptr.value = palette_ptr.value + 2
         palette_ptr:der_u16_l(libluna.gfx.colors.WHITE)
 
     else -- DESKTOP PLATFORM
-        BushEngine.vram = kernel._get_raw_vram_pointer()
-    
-        BushEngine._putc = function(vram, str, xPos, yPos)
+        self.vram = kernel._get_raw_vram_pointer()
+        self._putc = function(vram, str, xPos, yPos)
             local c = string.byte(str)
     
             for index = 1, 64 do

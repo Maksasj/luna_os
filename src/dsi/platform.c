@@ -13,13 +13,11 @@
 
 void p_setup_gfx(LunaOS* os_instance) {
     // vramSetMainBanks(VRAM_A_MAIN_BG | VRAM_C_SUB_BG);
-    videoSetMode(MODE_0_2D);
-    videoSetModeSub(MODE_0_2D);
 
     vramSetBankA(VRAM_A_MAIN_BG);
     vramSetBankC(VRAM_C_SUB_BG);
 
-	videoSetMode(MODE_0_2D);
+    videoSetMode(MODE_0_2D);
     videoSetModeSub(MODE_0_2D);
 }
 

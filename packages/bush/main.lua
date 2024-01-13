@@ -3,8 +3,37 @@ kernel._require("packages/bush/engine.lua")
 
 function main()
     bush = BushEngine.new();
+    keyboard = BushEngine.new();
 
-    bush:setup()
+    bush:setup(surfacec.MAIN_SCREEN)
+    keyboard:setup(surfacec.BOTTOM_SCREEN)
+
+    keyboard:print_lines({
+        "+-----+--LUNA_OS_0.1.0v--+-----+",
+        "|     |                  |     |",
+        "|     |                  |     |",
+        "|     |                  |     |",
+        "+-----+-----+------+-----+-----+",
+        "|     |     |      |     |     |",
+        "|     |     |      |     |     |",
+        "|     |     |      |     |     |",
+        "+-----+-----+------+-----+-----+",
+        "|     |     |      |     |     |",
+        "|     |     |      |     |     |",
+        "|     |     |      |     |     |",
+        "+-----+-----+------+-----+-----+",
+        "|     |     |      |     |     |",
+        "|     |     |      |     |     |",
+        "|     |     |      |     |     |",
+        "+-----+-----+------+-----+-----+",
+        "|     |     |      |     |     |",
+        "|     |     |      |     |     |",
+        "|     |     |      |     |     |",
+        "+-----+-----+------+-----+-----+",
+        "|                              |",
+        "|Charge 43/50                  |",
+        "+------------------------------+"
+    })
 
     local dirp = kernel._opendir(".")
     if dirp == 0 then
@@ -24,6 +53,7 @@ function main()
 
     function redraw()
         bush:draw_lines()
+        keyboard:draw_lines()
         bush:put_line("bush> ", 0, 23, libluna.gfx.colors.WHITE)
     end
     redraw()
