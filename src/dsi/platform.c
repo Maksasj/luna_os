@@ -12,46 +12,15 @@
 #include "platform.h"
 
 void p_setup_gfx(LunaOS* os_instance) {
+    // vramSetMainBanks(VRAM_A_MAIN_BG | VRAM_C_SUB_BG);
+    videoSetMode(MODE_0_2D);
+    videoSetModeSub(MODE_0_2D);
+
     vramSetBankA(VRAM_A_MAIN_BG);
+    vramSetBankC(VRAM_C_SUB_BG);
 
 	videoSetMode(MODE_0_2D);
     videoSetModeSub(MODE_0_2D);
-
-    // Set up affine background 3 on main as a 16-bit color background.
-    // REG_BG3CNT = BgSize_T_256x256 | BG_TILE_BASE(1) |  BG_MAP_BASE(0) | BG_PRIORITY(3) | BG_COLOR_256;
-
-    // Set the affine transformation matrix for the main screen background 3 to be the identity matrix.
-    /*
-    REG_BG3PA = 1 << 8;
-    REG_BG3PB = 0;
-    REG_BG3PC = 0;
-    REG_BG3PD = 1 << 8;
-    */
-    // Place main screen background 3 at the origin (upper left of the screen).
-    /*
-    REG_BG3X = 0;
-    REG_BG3Y = 0;
-    */
-
-    // REG_DISPCNT |= 1 << (DISPLAY_ENABLE_SHIFT + 3);
-
-    // void* tilePtr = (u16 *)(BG_TILE_RAM(BG_TILE_BASE(1)));
-    // void* mapPtr = (u16 *)BG_MAP_RAM(BG_MAP_BASE(0));
-
-    // void* tilePtr = BG_TILE_RAM(1);
-    // void* mapPtr = BG_MAP_RAM(0);
-
-
-    // int bg0T = bgInit(3, BgType_Text8bpp, BgSize_T_256x256, 0, 1);
-
-	int bg1 = bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0, 0);
-
-	// os_instance->vram0 = (u16*) bgGetGfxPtr(bg0B);
-
-    // os_instance->vram1 = (u16*) bgGetGfxPtr(bg0T);
-    // os_instance->vmap = (u16*) bgGetMapPtr(bg0T);
-    // os_instance->vram = tilePtr;
-    // os_instance->vmap = mapPtr;
 }
 
 void p_setup_fat() {
