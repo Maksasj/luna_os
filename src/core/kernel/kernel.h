@@ -19,8 +19,7 @@ typedef struct LuaKernelFunction {
 
 static LuaKernelFunction lua_kernel_functions[] = {
     // gfx
-    { "_get_raw_vram0_pointer", l_get_vram0_pointer },
-    { "_get_raw_vram1_pointer", l_get_vram1_pointer },
+    { "_get_raw_vram_pointer", l_get_vram_pointer },
     { "_get_raw_vmap_pointer", l_get_vmap_pointer },
     { "_wait_for_vblank", l_wait_for_vblank },
     

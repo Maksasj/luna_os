@@ -5,11 +5,9 @@
 #include "lua/lualib.h"
 #include "lua/lauxlib.h"
 
-int l_get_vram0_pointer(lua_State *L);
-int l_get_vram1_pointer(lua_State *L);
 int l_get_vram_pointer(lua_State *L);
-
 int l_get_vmap_pointer(lua_State *L);
+
 int l_wait_for_vblank(lua_State *L);
 
 #endif

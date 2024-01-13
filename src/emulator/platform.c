@@ -27,7 +27,7 @@ void p_setup_gfx(LunaOS* os_instance) {
     int pitch;
     SDL_LockTexture(texture, &window_rect, &pixels, &pitch);
 
-    os.vram0 = pixels;
+    os.vram = pixels;
 }
 
 void p_setup_fat() {
@@ -99,7 +99,7 @@ void p_wait_vblank() {
     int pitch;
     SDL_LockTexture(texture, &window_rect, &pixels, &pitch);
 
-    os.vram0 = pixels;
+    os.vram = pixels;
 }
 
 int p_get_key(long long keyCode) {
