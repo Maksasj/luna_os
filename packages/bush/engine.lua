@@ -30,16 +30,30 @@ function BushEngine:put_line(str, xPos, yPos)
     end
 end
 
-function BushEngine:draw_lines()
+function BushEngine:draw_lines(yOffset)
     local linesDrawn = 0
 
     for index = #self.lines, 1, -1 do
         local line = self.lines[index]
 
-        self:put_line(line, 0, 23 - linesDrawn)
+        self:put_line(line, 0, (yOffset - 1) - linesDrawn)
 
         linesDrawn = linesDrawn + 1
-        if linesDrawn == 24 then return end
+        if linesDrawn == yOffset then return end
+    end
+end
+
+function BushEngine:flush_lines()
+    for k,v in pairs(self.lines) do
+      self.lines[k] = nil
+    end
+end
+
+function BushEngine:clear()
+    for x = 0, 32 do
+        for y = 0, 24 do
+            self:putc(" ", x, y)
+        end
     end
 end
 
