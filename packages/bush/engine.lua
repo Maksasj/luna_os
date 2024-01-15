@@ -45,7 +45,7 @@ end
 
 function BushEngine:flush_lines()
     for k,v in pairs(self.lines) do
-      self.lines[k] = nil
+        self.lines[k] = nil
     end
 end
 

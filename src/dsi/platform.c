@@ -27,9 +27,9 @@ void p_setup_fat() {
     if (!init_ok) {
         p_fire_error("Failed to initialize fat library");
     } else {
-        char *cwd = getcwd(NULL, 0);
+        //  char *cwd = getcwd(NULL, 0);
         // printf("Current dir: %s\n\n", cwd);
-        free(cwd);
+        // free(cwd);
     }
 }
 
@@ -39,14 +39,17 @@ void p_setup(LunaOS* os_instance) {
 }
 
 void p_fire_error(const char* error_message) {
-    while(1) {
-        for (int y = 0; y < 192; y++) {
-            for (int x = 0; x < 256; x++) {
-                os.vram[x + (y << 8)] = ARGB16(1, rand() % 31, 0, 0);
-            }
-        }
+    consoleDemoInit();
 
-        p_wait_vblank();
+    printf("\x1b[28DLuna lua VM error: %s", error_message);
+
+    while(1) {
+        swiWaitForVBlank();
+        scanKeys();
+
+        int keys = keysDown();
+
+        if(keys & KEY_START) break;
     }
 }
 

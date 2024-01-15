@@ -14,6 +14,8 @@ function ContextEngine.new(surface)
     engine.bushEngine = BushEngine.new()
     engine.bushEngine:setup(surface)
 
+    engine.inputEngine = InputEngine.new()
+
     engine.selected = 1
     engine.state = ContextEngineStates.CONTEXT
     engine.submenus = {}
@@ -26,35 +28,37 @@ function ContextEngine:add_submenu(submenu)
 end
 
 function ContextEngine:update()
+    self.inputEngine:update()
+
     if self.state == ContextEngineStates.CONTEXT then
-        if kernel._get_key(libluna.keycodes.KEY_UP) ~= 0 then
+        if self.inputEngine:is_key_down(KEY_UP) then
             if self.selected > 1 then
                 self.selected = self.selected - 1
                 return true
             end
         end
 
-        if kernel._get_key(libluna.keycodes.KEY_DOWN) ~= 0 then
+        if self.inputEngine:is_key_down(KEY_DOWN) then
             if self.selected < #self.submenus then
                 self.selected = self.selected + 1
                 return true
             end
         end
 
-        if kernel._get_key(libluna.keycodes.KEY_A) ~= 0 then
+        if self.inputEngine:is_key_down(KEY_A) then
             self.state = ContextEngineStates.SUBMENU
-            self.submenus[self.selected]._enter(self.submenus[self.selected], self.bushEngine)
+            self.submenus[self.selected]._enter(self, self.submenus[self.selected], self.bushEngine)
             return true
         end
     else
-        if kernel._get_key(libluna.keycodes.KEY_L) ~= 0 then
+        if self.inputEngine:is_key_down(KEY_L) then
             self.state = ContextEngineStates.CONTEXT
             self.bushEngine:flush_lines()
             self.bushEngine:clear()
             return true
         end
 
-        return self.submenus[self.selected]._update(self.submenus[self.selected])
+        return self.submenus[self.selected]._update(self, self.submenus[self.selected])
     end
 
     return false
@@ -70,6 +74,6 @@ function ContextEngine:draw()
 
         self.bushEngine:putc(">", 0, self.selected)
     else
-        self.submenus[self.selected]._draw(self.submenus[self.selected], self.bushEngine)
+        self.submenus[self.selected]._draw(self, self.submenus[self.selected])
     end
 end

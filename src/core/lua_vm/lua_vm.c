@@ -14,41 +14,9 @@ void terminate_lua_vm(LuaVM* vm) {
     lua_close(vm->lua_state);
 }
 
-char* read_file(const char* filename) {
-    FILE* file = fopen(filename, "rb");
-
-    if (file == NULL) {
-        p_fire_error("Failed to open file\n");
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
-    rewind(file);
-
-    char* content = (char*) malloc(file_size + 1);
-
-    if (content == NULL) {
-        fclose(file);
-        p_fire_error("Failed to allocate memory for lua code\n");
-        return NULL;
-    }
-
-    fread(content, 1, file_size, file);
-    content[file_size] = '\0';
-
-    fclose(file);
-
-    return content;
-}
-
 void run_script(const char* entryPointPath) {
-    char* lua_code = read_file(entryPointPath);
-
-    int luaRes = luaL_dostring(os.vm.lua_state, lua_code);
+    int luaRes = luaL_dofile(os.vm.lua_state, entryPointPath);
 
     if(luaRes)
         p_fire_error(lua_tostring(os.vm.lua_state, -1));
-
-    free(lua_code);
 }
