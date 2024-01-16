@@ -2,14 +2,6 @@
 
 #include "../../luna_os.h"
 
-int l_require(lua_State *L) {
-    const char* str = luaL_checkstring(L, 1);
-
-    run_script(str);
-
-    return 0;
-}
-
 int l_get_key(lua_State *L) {
     long long keyCode = luaL_checknumber(L, 1);
     long long result = p_get_key(keyCode);

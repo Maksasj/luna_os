@@ -5,7 +5,6 @@
 #include "lua/lualib.h"
 #include "lua/lauxlib.h"
 
-int l_require(lua_State *L);
 int l_get_key(lua_State *L);
 int l_platform(lua_State *L);
 

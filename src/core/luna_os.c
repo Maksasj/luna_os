@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     start_lua_vm(&os.vm);
     setup_kernel_lua_interface(&os.vm);
 
-    run_script("packages/bush/main.lua");
+    run_script("boot.lua");
 
     // terminate and cleanup
     terminate_lua_vm(&os.vm);

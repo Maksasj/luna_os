@@ -24,7 +24,6 @@ static LuaKernelFunction lua_kernel_functions[] = {
     { "_wait_for_vblank", l_wait_for_vblank },
     
     // platform
-    { "_require", l_require },
     { "_get_key", l_get_key },
     { "_platform", l_platform },
 

@@ -31,27 +31,27 @@ function ContextEngine:update()
     self.inputEngine:update()
 
     if self.state == ContextEngineStates.CONTEXT then
-        if self.inputEngine:is_key_down(KEY_UP) then
+        if self.inputEngine:is_key_pressed(KEY_UP) then
             if self.selected > 1 then
                 self.selected = self.selected - 1
                 return true
             end
         end
 
-        if self.inputEngine:is_key_down(KEY_DOWN) then
+        if self.inputEngine:is_key_pressed(KEY_DOWN) then
             if self.selected < #self.submenus then
                 self.selected = self.selected + 1
                 return true
             end
         end
 
-        if self.inputEngine:is_key_down(KEY_A) then
+        if self.inputEngine:is_key_pressed(KEY_A) then
             self.state = ContextEngineStates.SUBMENU
             self.submenus[self.selected]._enter(self, self.submenus[self.selected], self.bushEngine)
             return true
         end
     else
-        if self.inputEngine:is_key_down(KEY_L) then
+        if self.inputEngine:is_key_pressed(KEY_L) then
             self.state = ContextEngineStates.CONTEXT
             self.bushEngine:flush_lines()
             self.bushEngine:clear()

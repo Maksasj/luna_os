@@ -1,10 +1,5 @@
-require 'packages.luna.ibm_bios_font'
-require 'packages.luna.c_pointer'
-
--- local function get_vram_pointer()
---     local pointer = kernel._get_raw_vram_pointer()
---     return LibLunaPointer:new(pointer)
--- end
+require 'luna.ibm_bios_font'
+require 'luna.c_pointer'
 
 local function to_argb16(a, r, g, b)
     return ((a & 0xFFFF) << 15) | (r) | ((g & 0xFFFF) << 5) | ((b & 0xFFFF) << 10) & 0xFFFF

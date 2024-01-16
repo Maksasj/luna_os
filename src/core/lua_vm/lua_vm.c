@@ -3,8 +3,6 @@
 #include "../luna_os.h"
 #include "../platform.h"
 
-#include <stdlib.h>
-
 void start_lua_vm(LuaVM* vm) {
 	vm->lua_state = luaL_newstate();
 	luaL_openlibs(vm->lua_state);
