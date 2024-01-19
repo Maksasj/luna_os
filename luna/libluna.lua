@@ -1,6 +1,8 @@
 require 'luna.ibm_bios_font'
 require 'luna.c_pointer'
 
+local random = math.random
+
 local function to_argb16(a, r, g, b)
     return ((a & 0xFFFF) << 15) | (r) | ((g & 0xFFFF) << 5) | ((b & 0xFFFF) << 10) & 0xFFFF
 end
@@ -38,6 +40,13 @@ libluna = {
             CYAN = to_argb16(1, 0, 31, 31)
         }
     },
+    uuid = function()
+        local template = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+            return template:gsub("[xy]", function (c)
+                local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
+                return string.format('%x', v)
+        end)
+    end,
     types = {
         char      = { size = 1, mask = 0xFF },
         short     = { size = 2, mask = 0xFFFF },

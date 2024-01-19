@@ -9,12 +9,35 @@ function luna:run_package(entryPoint)
     local entry = require(packageInfo.entryPoint)
 
     local package = {
+        uuid = libluna.uuid(),
         info = packageInfo,
         object = entry,
         thread = coroutine.create(function() entry:main(self) end)
     }
 
     table.insert(self.packages, package)
+
+    return package.uuid
+end
+
+function luna:get_package_index(uuid)
+    for i = 1, #luna.packages do
+        if luna.packages[i].uuid == uuid then
+            return i
+        end
+    end
+
+    return -1
+end
+
+function luna:stop_package(uuid)
+    local index = self:get_package_index(uuid)
+
+    if index ~= -1 then
+        -- Todo stop coroutine
+
+        table.remove(luna.packages, index);
+    end
 end
 
 function luna:main()
