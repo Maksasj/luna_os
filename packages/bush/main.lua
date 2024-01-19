@@ -8,10 +8,11 @@ require 'packages.bush.commands.clear_command'
 require 'packages.bush.commands.date_command'
 require 'packages.bush.commands.ls_command'
 require 'packages.bush.commands.pwd_command'
+require 'packages.bush.commands.pst_command'
 
 local package = {}
 
-function package:init(system)
+function package:main(system)
     function run_command(command)
         local iterator = command:gmatch("%S+")
 
@@ -21,8 +22,8 @@ function package:init(system)
         end
 
         local index = -1
-        for i = 1, #self.commands do
-            if self.commands[i].keyword == comTable[1] then
+        for i = 1, #commands do
+            if commands[i].keyword == comTable[1] then
                 index = i
             end
         end
@@ -33,42 +34,34 @@ function package:init(system)
         end
 
         if #comTable >= 1 then
-            self.commands[index]._onCommand(comTable)
+            commands[index]._onCommand(comTable)
         end
     end
 
-    self.bush = BushEngine.new()
-    self.bush:setup(surfacec.MAIN_SCREEN)
-    self.bush:draw_lines(23)
-    self.bush:put_line("bush> ", 0, 23, libluna.gfx.colors.WHITE)
+    bush = BushEngine.new()
+    bush:setup(surfacec.MAIN_SCREEN)
+    bush:draw_lines(23)
+    bush:put_line("bush> ", 0, 23, libluna.gfx.colors.WHITE)
 
-    self.commands = {
-        ls_command(self.bush),
-        date_command(self.bush),
-        pwd_command(self.bush),
-        clear_command(self.bush)
+    commands = {
+        ls_command(bush),
+        date_command(bush),
+        pwd_command(bush),
+        clear_command(bush),
+        pst_command(bush, system)
     }
 
-    self.context = ContextEngine.new(surfacec.BOTTOM_SCREEN)
+    local context = system:get_package(1).object
 
-    local bushSubmenu = (require 'packages.bush.submenu').create(run_command, self.commands)
-    local keyboardSubmenu = (require 'luna.context.submenus.keyboard').create()
+    local bushSubmenu = (require 'packages.bush.submenu').create(run_command, commands)
+    context:add_submenu(bushSubmenu)
 
-    self.context:add_submenu(keyboardSubmenu)
-    self.context:add_submenu(bushSubmenu)
+    while true do
+        bush:draw_lines(23)
+        bush:put_line("bush> ", 0, 23, libluna.gfx.colors.WHITE)
 
-    self.context:draw()
-end
-
-function package:update(system)
-    return self.context:update()
-end
-
-function package:draw(system)
-    self.context:draw()
-
-    self.bush:draw_lines(23)
-    self.bush:put_line("bush> ", 0, 23, libluna.gfx.colors.WHITE)
+        coroutine.yield()
+    end
 end
 
 return package
