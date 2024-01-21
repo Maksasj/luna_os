@@ -1,6 +1,6 @@
 require 'luna.input_engine'
 require 'luna.context.context'
-require 'luna.libluna'
+require 'luna.libluna.libluna'
 
 local package = {}
 

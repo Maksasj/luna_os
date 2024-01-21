@@ -3,7 +3,7 @@
 int l_malloc(lua_State *L) {
     unsigned long long size = luaL_checknumber(L, 1);
     void* ptr = malloc(size);
-    printf("Allocated memory at %llu with size %llu \n", ptr, size);
+    // printf("Allocated memory at %llu with size %llu \n", ptr, size);
 
     lua_pushinteger(L, (long long) ptr);
 
@@ -12,7 +12,7 @@ int l_malloc(lua_State *L) {
 
 int l_free(lua_State *L) {
     void* ptr = (void*) (unsigned long long) luaL_checknumber(L, 1);
-    printf("Freeing memory segment at %llu \n", ptr);
+    // printf("Freeing memory segment at %llu \n", ptr);
 
     free(ptr);
     return 0;

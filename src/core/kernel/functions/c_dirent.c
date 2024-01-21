@@ -4,6 +4,7 @@ int l_opendir(lua_State *L) {
     const char* path = luaL_checkstring(L, 1);
     void* dirp = opendir(path);
     lua_pushinteger(L, (long long) dirp);
+
     return 1;
 }
 

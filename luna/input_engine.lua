@@ -8,7 +8,7 @@ function InputEngine.new()
 
     engine.states = {}
 
-    for k, v in pairs(libluna.keycodes) do
+    for k, v in pairs(libluna.io.keycodes) do
         engine.states[v] = {
             was_down = false,
             down = false
@@ -19,7 +19,7 @@ function InputEngine.new()
 end
 
 function InputEngine:update()
-    for k, v in pairs(libluna.keycodes) do
+    for k, v in pairs(libluna.io.keycodes) do
         self.states[v].was_down = self.states[v].down
         self.states[v].down = (kernel._get_key(v) ~= 0 and true or false)
     end

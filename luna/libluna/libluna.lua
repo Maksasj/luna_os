@@ -1,5 +1,7 @@
-require 'luna.ibm_bios_font'
-require 'luna.c_pointer'
+require 'luna.libluna.ibm_bios_font'
+require 'luna.libluna.c_pointer'
+
+require 'luna.libluna.files'
 
 local random = math.random
 
@@ -53,18 +55,24 @@ libluna = {
         int       = { size = 4, mask = 0xFFFFFFFF },
         long_long = { size = 8, mask = 0xFFFFFFFFFFFFFFFF }
     },
-    keycodes = {
-        KEY_A = KEY_A,
-        KEY_B = KEY_B,
-        KEY_SELECT = KEY_SELECT,
-        KEY_START = KEY_START,
-        KEY_RIGHT = KEY_RIGHT,
-        KEY_LEFT = KEY_LEFT,
-        KEY_UP = KEY_UP,
-        KEY_DOWN = KEY_DOWN,
-        KEY_R = KEY_R,
-        KEY_L = KEY_L,
-        KEY_X = KEY_X,
-        KEY_Y = KEY_Y
+    io = {
+        keycodes = {
+            KEY_A = KEY_A,
+            KEY_B = KEY_B,
+            KEY_SELECT = KEY_SELECT,
+            KEY_START = KEY_START,
+            KEY_RIGHT = KEY_RIGHT,
+            KEY_LEFT = KEY_LEFT,
+            KEY_UP = KEY_UP,
+            KEY_DOWN = KEY_DOWN,
+            KEY_R = KEY_R,
+            KEY_L = KEY_L,
+            KEY_X = KEY_X,
+            KEY_Y = KEY_Y
+        },
+        opendir = _opendir,
+        is_dir = _is_dir,
+        is_file = _is_file,
+        file_exist = _file_exist
     }
 }
